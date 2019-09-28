@@ -10,22 +10,13 @@
     android:visibility="visible"
     tools:context=".MapsActivity">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:padding="25dp"
-        android:layout_gravity= "bottom|center"
-        android:paddingRight="10dp"
-        android:text="Mark for Cleanup" />
-
 
     <ImageButton
         android:id="@+id/imageButton1"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_gravity="bottom"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|center"
+        android:scaleType="fitCenter"
         android:src="@drawable/trash" />
 
 
