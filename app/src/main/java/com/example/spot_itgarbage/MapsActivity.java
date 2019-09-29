@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     //TODO: gello
     private static DatabaseReference Database;
     private static final String TAG = "MapActivity";
@@ -68,9 +69,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
             mMap.setMyLocationEnabled(true);
+            mMap.setOnMarkerClickListener(this);
+
 
         }
 
+    }
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+            Uri uriUrl = Uri.parse(marker.getTitle());
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+            startActivity(launchBrowser);
+            return false;
     }
 
     @Override
@@ -140,13 +151,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
     }
 
     // Adds marker to map by taking latest lat lng from arraylist.
     public void addMarker(String desc, double lat, double lng, int rating, String key, String url) {
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions marker = new MarkerOptions()
-                .position(latLng).title("Url: " + url);
+                .position(latLng).title(url);
         markerList.add(mMap.addMarker(marker));
 
     }

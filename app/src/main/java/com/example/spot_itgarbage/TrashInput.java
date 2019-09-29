@@ -93,6 +93,8 @@ public class TrashInput extends AppCompatActivity {
                                           MarkerData dataEntry = new MarkerData(description, rating, lat, lng, url);
                                           Database.push().setValue(dataEntry);
 
+                                          finish();
+
                                       }
                                   }
         );
