@@ -22,6 +22,14 @@
         app:layout_constraintVertical_bias="0.011"
         app:srcCompat="@drawable/camera" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="9"/>
+
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,7 +92,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:foregroundGravity="left"
@@ -107,6 +115,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
