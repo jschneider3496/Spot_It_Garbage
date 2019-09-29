@@ -6,12 +6,22 @@ public class MarkerData {
     private int rating;
     private double lat;
     private double lng;
+    private String url;
 
-    public MarkerData(String desc, int rating, double lat, double lng) {
+    public MarkerData(String desc, int rating, double lat, double lng, String url) {
         this.desc = desc;
         this.rating = rating;
         this.lat = lat;
         this.lng = lng;
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public MarkerData(){

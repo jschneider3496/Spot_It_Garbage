@@ -43,6 +43,7 @@ public class TrashInput extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private static final String TAG = "TrashInput";
     private Uri ImageUri;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +90,22 @@ public class TrashInput extends AppCompatActivity {
 //                                          System.out.println("lat: " + lat + " lng: " + lng);
 
 
-                                          MarkerData dataEntry = new MarkerData(description, rating, lat, lng);
+                                          MarkerData dataEntry = new MarkerData(description, rating, lat, lng, url);
                                           Database.push().setValue(dataEntry);
 
                                       }
                                   }
         );
     }
+
+
+//    public String getUrl(){
+//        return url;
+//    }
+//
+//    public void setUrl(String url){
+//        this.url = url;
+//    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -110,20 +120,33 @@ public class TrashInput extends AppCompatActivity {
     private void upload(Bitmap photo) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-
+        String picName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         byte[] b = stream.toByteArray();
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("documentImages").child(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("documentImages").child(picName);
+
+
+//        String downloadUrl = storageReference.getDownloadUrl().toString();
+//        System.out.println("DownloadURL 123: " + downloadUrl);
+
+
+
         //StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(userID);
 
         storageReference.putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        System.out.println("NEw thing " + uri.toString());
+                        url = (uri.toString());
+
+                    }
+                });
                 Toast.makeText(TrashInput.this, "uploaded", Toast.LENGTH_SHORT).show();
-                System.out.println("DownloadURL: " + downloadUrl);
+//                System.out.println("DownloadURL: " + downloadUrl);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -134,6 +157,20 @@ public class TrashInput extends AppCompatActivity {
 
             }
         });
+//        Getting url
+//        storageRef.child(picName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                // Got the download URL for 'users/me/profile.png'
+//
+////                System.out.println("Download URL NEW: " + );
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle any errors
+//            }
+//        });
     }
 
 //    private void postPic() {

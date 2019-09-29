@@ -82,7 +82,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 MarkerData value = dataSnapshot.getValue(MarkerData.class);
                 Log.d(TAG, "Value is: " + value);
-                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey());
+                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl());
             }
 
             @Override
@@ -143,10 +143,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // Adds marker to map by taking latest lat lng from arraylist.
-    public void addMarker(String desc, double lat, double lng, int rating, String key) {
+    public void addMarker(String desc, double lat, double lng, int rating, String key, String url) {
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions marker = new MarkerOptions()
-                .position(latLng).title("Marker " + (key));
+                .position(latLng).title("Url: " + url);
         markerList.add(mMap.addMarker(marker));
 
     }
