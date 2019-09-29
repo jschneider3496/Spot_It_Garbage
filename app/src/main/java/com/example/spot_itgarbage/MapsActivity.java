@@ -1,38 +1,21 @@
 package com.example.spot_itgarbage;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,16 +23,38 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    @Override
+
+    private static DatabaseReference Database;
+    private static final String TAG = "MapActivity";
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
+
+    //vars
+    private Boolean mLocationPermissionsGranted = false;
+    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    // Storing lat long whenever getDeviceLocation() is called as new arraylist element
+    private double lat;
+    private double lng;
+    private ArrayList<Marker> markerList = new ArrayList<>();
+
+        @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
@@ -70,22 +75,70 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private static final String TAG = "MapActivity";
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
 
-    //vars
-    private Boolean mLocationPermissionsGranted = false;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    // Storing lat long whenever getDeviceLocation() is called as new arraylist element
-    private ArrayList<LatLng> latLngList = new ArrayList<>();
+
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Database = FirebaseDatabase.getInstance().getReference();
+
+        Database.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                MarkerData value = dataSnapshot.getValue(MarkerData.class);
+                Log.d(TAG, "Value is: " + value);
+                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                String deletedKey = "Marker " + dataSnapshot.getKey();
+                for(Marker marker : markerList){
+                    if(marker.getTitle().equals(deletedKey)){
+                        marker.remove();
+                    }
+                }
+                System.out.println("Deleted marker: " + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+//        Database.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                    MarkerData value = dataSnapshot.getValue(MarkerData.class);
+//                    Log.d(TAG, "Value is: " + value);
+//                    addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey());
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Log.w(TAG, "Failed to read value.", databaseError.toException());
+//            }
+//        });
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -104,18 +157,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 openTrashInput();
                 getDeviceLocation();
-                addMarker();
+//              Send lat and long to trash input
+                Intent intent = new Intent(MapsActivity.this, TrashInput.class);
+                Bundle location = new Bundle();
+                location.putDouble("lat", getLat());
+                location.putDouble("lng", getLng());
+                intent.putExtras(location);
+                startActivity(intent);
+
+//                addMarker();
+
 
             }
         });
     }
 
     // Adds marker to map by taking latest lat lng from arraylist.
-    public void addMarker() {
-        LatLng latLng= latLngList.get(latLngList.size() - 1);
-        MarkerOptions options = new MarkerOptions()
-                .position(latLng).title("Marker " + (latLngList.size() - 1));
-        mMap.addMarker(options);
+    public void addMarker(String desc, double lat, double lng, int rating, String key) {
+        LatLng latLng = new LatLng(lat, lng);
+        MarkerOptions marker = new MarkerOptions()
+                .position(latLng).title("Marker " + (key));
+        markerList.add(mMap.addMarker(marker));
+
+    }
+
+    private void removeMarker() {
+
     }
 
     public void openTrashInput() {
@@ -142,7 +209,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM);
 
-                            latLngList.add(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                            setLat(currentLocation.getLatitude());
+                            setLng(currentLocation.getLongitude());
+
+//                            latLngList.add(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
@@ -154,6 +224,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public double getLat() {
+        return this.lat;
+    }
+
+    public double getLng() {
+        return this.lng;
     }
 
     private Location getLocationCords(Location currentLocation) {
