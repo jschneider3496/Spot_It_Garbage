@@ -112,20 +112,24 @@ public class TrashInput extends AppCompatActivity {
         photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
         byte[] b = stream.toByteArray();
-        StorageReference storageReference =FirebaseStorage.getInstance().getReference().child("documentImages").child(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("documentImages").child(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
         //StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(userID);
+
         storageReference.putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                 Toast.makeText(TrashInput.this, "uploaded", Toast.LENGTH_SHORT).show();
+                System.out.println("DownloadURL: " + downloadUrl);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(TrashInput.this,"failed",Toast.LENGTH_LONG).show();
+                Toast.makeText(TrashInput.this, "failed", Toast.LENGTH_LONG).show();
 
 
             }
@@ -143,7 +147,7 @@ public class TrashInput extends AppCompatActivity {
 //                String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 //            }
 //        });
-  //  }
+    //  }
 
 //    static final int REQUEST_TAKE_PHOTO = 1;
 //    String currentPhotoPath;
