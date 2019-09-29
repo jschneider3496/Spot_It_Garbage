@@ -116,13 +116,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
             mMap.setMyLocationEnabled(true);
-//            mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
+            // Add a marker in Sydney and move the camera
+//            LatLng UMBC = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//            mMap.addMarker(new MarkerOptions().position(UMBC).title("Marker in UMBC"));
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(UMBC));
         }
+
+//          mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
     }
 
     private static final String TAG = "MapActivity";
-
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -135,13 +140,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
         getLocationPermission();
 
@@ -249,6 +253,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
+
 
 
 }
