@@ -114,7 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void addMarker() {
         LatLng latLng= latLngList.get(latLngList.size() - 1);
         MarkerOptions options = new MarkerOptions()
-                .position(latLng);
+                .position(latLng).title("Marker " + (latLngList.size() - 1));
         mMap.addMarker(options);
     }
 
