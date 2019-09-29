@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -44,6 +47,8 @@ public class TrashInput extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         imageView.setImageBitmap(bitmap);
     }
+
+
 
     public void seekBar() {
         seekbar = (SeekBar) findViewById(R.id.seekBar);
