@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     //TODO: gello
@@ -53,6 +54,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double lat;
     private double lng;
     private ArrayList<Marker> markerList = new ArrayList<>();
+    private HashMap<DataSnapshot, Marker> dataList = new HashMap<>();
 
         @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -93,7 +95,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 MarkerData value = dataSnapshot.getValue(MarkerData.class);
                 Log.d(TAG, "Value is: " + value);
-                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl());
+                dataList.put(dataSnapshot, addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl()));
+//                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl());
             }
 
             @Override
@@ -104,13 +107,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                String deletedKey = "Marker " + dataSnapshot.getKey();
-                for(Marker marker : markerList){
-                    if(marker.getTitle().equals(deletedKey)){
-                        marker.remove();
+                for(DataSnapshot data: dataList.keySet()){
+                    if(data.getKey().equals(dataSnapshot.getKey())){
+                        dataList.get(data).remove();
+                        dataList.remove(data);
                     }
                 }
-                System.out.println("Deleted marker: " + dataSnapshot.getKey());
+//                String deletedKey = "Marker " + dataSnapshot.getKey();
+//                for(Marker marker : markerList){
+//                    if(marker.getTitle().equals(deletedKey)) {
+//                        marker.remove();
+//                    }
+//                }
+                System.out.println("Deleted marker: " + dataSnapshot.getValue());
             }
 
             @Override
@@ -156,11 +165,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // Adds marker to map by taking latest lat lng from arraylist.
-    public void addMarker(String desc, double lat, double lng, int rating, String key, String url) {
+    public Marker addMarker(String desc, double lat, double lng, int rating, String key, String url) {
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions marker = new MarkerOptions()
                 .position(latLng).title(url);
-        markerList.add(mMap.addMarker(marker));
+//        markerList.add(mMap.addMarker(marker));
+        return mMap.addMarker(marker);
 
     }
 
