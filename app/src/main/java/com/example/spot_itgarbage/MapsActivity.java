@@ -137,6 +137,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            //when button is clicked, it takes user to next sceen
             public void onClick(View v) {
 
                 openTrashInput();

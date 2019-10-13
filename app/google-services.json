@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "536214108373",
+    "firebase_url": "https://grounded-region-254319.firebaseio.com",
+    "project_id": "grounded-region-254319",
+    "storage_bucket": "grounded-region-254319.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536214108373:android:2c1c13725a18c885ff8a5c",
+        "android_client_info": {
+          "package_name": "com.example.spot_itgarbage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "536214108373-ikdmv0ondu2k5i3etr2h6tk8kpl5q9l6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spot_itgarbage",
+            "certificate_hash": "2972d93eaa7e958a6513a1682cfe145e267764d5"
+          }
+        },
+        {
+          "client_id": "536214108373-a9bqalumnc5tmgpinvnmh8h1vjop9n47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZiFTOSFsBE9u4FKEHrrugPi6J16miqgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "536214108373-a9bqalumnc5tmgpinvnmh8h1vjop9n47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
