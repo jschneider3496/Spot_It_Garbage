@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,8 +52,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Storing lat long whenever getDeviceLocation() is called as new arraylist element
     private double lat;
     private double lng;
-    private ArrayList<Marker> markerList = new ArrayList<>();
     private HashMap<DataSnapshot, Marker> dataList = new HashMap<>();
+    private ArrayList<MarkerData> markerList = new ArrayList<>();
 
         @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -77,13 +76,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
+//    @Override
+//    public boolean onMarkerClick(final Marker marker) {
+//
+//            Uri uriUrl = Uri.parse(marker.getTitle());
+//            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+//            startActivity(launchBrowser);
+//            return false;
+//    }
+
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-            Uri uriUrl = Uri.parse(marker.getTitle());
-            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-            startActivity(launchBrowser);
-            return false;
+        Intent launchInfoWindow = new Intent(this, TrashInfoWindow.class);
+
+//        Find and initialize marker data of marker that was clicked on
+        MarkerData data = null;
+        for(MarkerData markerInfo: markerList){
+            if(markerInfo.getUrl().equals(marker.getTitle()));
+                data = markerInfo;
+        }
+
+        //To pass marker data to activity:
+        launchInfoWindow.putExtra("Marker", data);
+        startActivity(launchInfoWindow);
+
+        return false;
     }
 
     @Override
@@ -96,6 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MarkerData value = dataSnapshot.getValue(MarkerData.class);
                 Log.d(TAG, "Value is: " + value);
                 dataList.put(dataSnapshot, addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl()));
+                markerList.add(value);
 //                addMarker(value.getDesc(), value.getLat(), value.getLng(), value.getRating(), dataSnapshot.getKey(), value.getUrl());
             }
 
@@ -108,17 +127,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot data: dataList.keySet()){
-                    if(data.getKey().equals(dataSnapshot.getKey())){
+                    if(data.getKey().equals(dataSnapshot.getKey())) {
                         dataList.get(data).remove();
                         dataList.remove(data);
                     }
                 }
-//                String deletedKey = "Marker " + dataSnapshot.getKey();
-//                for(Marker marker : markerList){
-//                    if(marker.getTitle().equals(deletedKey)) {
-//                        marker.remove();
-//                    }
-//                }
+                for(MarkerData data: markerList) {
+                    if(data.getUrl().equals(dataSnapshot.getKey()))
+                        markerList.remove(data);
+                }
+
                 System.out.println("Deleted marker: " + dataSnapshot.getValue());
             }
 

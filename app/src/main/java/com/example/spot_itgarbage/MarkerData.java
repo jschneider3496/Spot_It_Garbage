@@ -1,6 +1,8 @@
 package com.example.spot_itgarbage;
 
-public class MarkerData {
+import java.io.Serializable;
+
+public class MarkerData implements Serializable {
 
     private String desc;
     private int rating;
