@@ -27,7 +27,11 @@ public class MarkerData implements Serializable {
     }
 
     public MarkerData(){
-
+        this.desc = "Default description";
+        this.rating = 0;
+        this.lat = 39.0119;
+        this.lng = 98.4842;
+        this.url = "https://firebasestorage.googleapis.com/v0/b/grounded-region-254319.appspot.com/o/documentImages%2F20191102_150613?alt=media&token=6a2b20b0-4776-4604-abee-b9665199daf1";
     }
 
     public int getRating() {

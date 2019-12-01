@@ -40,7 +40,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCvknABYWDiOQmAkbDiRk9LyGnqeLFTggAstring/google_maps_key" />
+            android:value="AIzaSyBcV81ElQB56-RXygNq2gQegHh_hgXezGM" />
 
         <activity
             android:name=".MapsActivity"
@@ -50,7 +50,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-    </application>
 
+        </activity>
+
+
+    </application>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

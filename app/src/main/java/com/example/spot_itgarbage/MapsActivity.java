@@ -76,14 +76,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
-//    @Override
-//    public boolean onMarkerClick(final Marker marker) {
-//
-//            Uri uriUrl = Uri.parse(marker.getTitle());
-//            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-//            startActivity(launchBrowser);
-//            return false;
-//    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
@@ -91,7 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent launchInfoWindow = new Intent(this, TrashInfoWindow.class);
 
 //        Find and initialize marker data of marker that was clicked on
-        MarkerData data = null;
+        MarkerData data = new MarkerData();
         for(MarkerData markerInfo: markerList){
             if(markerInfo.getUrl().equals(marker.getTitle()));
                 data = markerInfo;
